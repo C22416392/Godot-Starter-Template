@@ -9,12 +9,15 @@ const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
 
 # TODO: Use referencing to change player animation
+@onready var sprite: AnimatedSprite2D = $Sprite
 
 
 func _input(event: InputEvent) -> void:
-	# TODO: make player sprite flip correctly
+	# Make player sprite flip correctly
 	if event.is_action_pressed(\"left\"):
-		pass
+		sprite.flip_h = true
+	elif event.is_action_pressed(\"right\"):
+		sprite.flip_h = false
 
 func _physics_process(delta: float) -> void:
 	# Add the gravity.
@@ -30,12 +33,14 @@ func _physics_process(delta: float) -> void:
 	var direction := Input.get_axis(\"left\", \"right\")
 	if direction:
 		velocity.x = direction * SPEED
+		sprite.animation = \"walk\"
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+		sprite.animation = \"default\"
 
 	move_and_slide()
 	
-	#physicsCollide()
+	physicsCollide()
 	
 # TODO: Try to understand this code
 # For colliding with rigidBodies
@@ -88,7 +93,7 @@ animations = [{
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 15
 script = SubResource("GDScript_i85ds")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -97,6 +102,6 @@ shape = SubResource("CircleShape2D_4dbaq")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_r5a0l")
+animation = &"walk"
 autoplay = "default"
-frame_progress = 0.0105999
 offset = Vector2(0.415, 0)

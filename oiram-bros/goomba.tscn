@@ -1,9 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://cvgw0xdi4o1x1"]
+[gd_scene load_steps=6 format=3 uid="uid://cvgw0xdi4o1x1"]
 
 [ext_resource type="Script" path="res://goomba.gd" id="1_1gixv"]
 [ext_resource type="Texture2D" uid="uid://wcicytvx168w" path="res://goomba.png" id="1_gah8r"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_hvtjf"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sd4ky"]
+size = Vector2(20, 11.59)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ajaq0"]
+size = Vector2(20, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_27a48"]
+size = Vector2(7, 15)
 
 [node name="Goomba" type="CharacterBody2D"]
 collision_layer = 8
@@ -12,6 +19,40 @@ script = ExtResource("1_1gixv")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_gah8r")
+hframes = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_hvtjf")
+position = Vector2(0, 3.795)
+shape = SubResource("RectangleShape2D_sd4ky")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_ajaq0")
+
+[node name="TurnAroundL" type="Area2D" parent="."]
+position = Vector2(-9, 0)
+collision_layer = 7
+collision_mask = 7
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnAroundL"]
+shape = SubResource("RectangleShape2D_27a48")
+
+[node name="TurnAroundR" type="Area2D" parent="."]
+position = Vector2(9, 0)
+collision_layer = 7
+collision_mask = 7
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TurnAroundR"]
+shape = SubResource("RectangleShape2D_27a48")
+
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
+[connection signal="body_entered" from="TurnAroundL" to="." method="_on_turn_around_l_body_entered"]
+[connection signal="body_entered" from="TurnAroundR" to="." method="_on_turn_around_r_body_entered"]
+[connection signal="body_shape_entered" from="TurnAroundR" to="." method="_on_turn_around_r_body_shape_entered"]
